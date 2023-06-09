@@ -24,6 +24,13 @@ Modify the `.env` file to configure the following options:
 - `SEND_OPTION`: The option for sending the results (tcp, udp, or log for debugging).
 - `PRIVATE_KEY_PATH`: The path to the private key file for HTTPS server.
 - `CERTIFICATE_PATH`: The path to the certificate file for HTTPS server.
+- `SSL_DIR`: The path to the directory that will have private key and certificate
+- `COMMON_NAME`: Domain for certificate
+- `COUNTRY`: Country for certificate
+- `STATE`: State for certificate
+- `LOCALITY`: City for certificate
+- `ORGANIZATION`: Organization name for certificate
+- `EMAIL`: Email for certificate
 
 ## API Routes
 
@@ -76,6 +83,11 @@ The JSON payload sent to `/snmp/get` route should follow the below structure:
 ```
 
 Refer to the code comments for detailed information on each field and their usage.
+
+## Tools
+
+1. Create Certificates files: `bash make-cert.sh`
+2. Send JSON to API to test snmp/get: `bash examples/snmp-get.sh examples/snmp-get.json`
 
 ## License
 
