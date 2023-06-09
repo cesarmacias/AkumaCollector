@@ -4,13 +4,15 @@ AkumaCollector is a Node.js-based data collection tool that utilizes SNMP and ot
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your/repository.git`
+1. Clone the repository: `git clone https://github.com/cesarmacias/AkumaCollector.git`
 2. Install dependencies: `npm install`
 
 ## Usage
 
 1. Set the required environment variables in a `.env` file or your preferred method.
-2. Run AkumaCollector: `node akuma.js`
+2. Run AkumaCollector, option 1: `node akuma.js`
+3. Run AkumaCollector, option 2: `npm run start`
+4. Run AkumaCollector, in debug: `npm run debug` 
 
 ## Configuration
 
