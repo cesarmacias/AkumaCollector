@@ -1,24 +1,22 @@
-FROM node:14
+FROM node:18-alpine AS akuma
 
 # Create app directory
-WORKDIR /usr/src/app
+RUN mkdir -p /home/node/app/node_modules
+RUN mkdir -p /home/node/app/cert 
+
+# Define working directory
+WORKDIR /home/node/app
 
 # Install app dependencies
 COPY package*.json ./
 RUN npm install
 
 # Bundle app source
-COPY . .
+COPY --chown=node:node . .
 
 # Copy certificates
-COPY cert/ cert/
+COPY --chown=node:node cert/ cert/
 
 # Expose port and start application
 EXPOSE 3000
 CMD [ "npm", "start" ]
-
-# Change the name of the image
-# from: 
-#   FROM node:14
-# to:
-FROM node:14 AS akuma-collector
