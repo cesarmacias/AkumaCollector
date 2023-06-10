@@ -1,2 +1,11 @@
 node_modules
 npm-debug.log
+.dockerignore
+Dockerfile
+docker-compose.yml
+examples
+.*.env
+.gitignore
+package-lock.json
+make-cert.sh
+*.md

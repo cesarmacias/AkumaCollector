@@ -1,11 +1,11 @@
 version: '3'
 services:
-  akuma:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-      target: akuma-collector
-    image: akuma-collector:0.1
+      target: akuma
+    image: akuma:latest
     ports:
       - "3000:3000"
     environment:

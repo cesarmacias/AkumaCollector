@@ -33,10 +33,11 @@ This repository contains the source code for the Akuma Collector application.
     CERTIFICATE_PATH="cert/server.crt"
    ```
 
-4. Build and start the Docker containers using Docker Compose:
+4. Build the iamge Docker container using Docker Compose:
 
    ```bash
-   docker-compose up --build
+   docker compose build --no-cache
+   docker compose up -d
    ```
 
    This command will build the Docker image and start the containers based on the configuration defined in the `docker-compose.yml` file.
