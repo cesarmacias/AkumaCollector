@@ -1,32 +1,36 @@
 #!/bin/bash
 
-# Cargar variables de entorno desde el archivo .env
-export $(cat .env | xargs)
-
-# Variables
-ssl_dir="$SSL_DIR"              # Directorio para los certificados
-common_name="$COMMON_NAME"      # Nombre común (dominio)
-country="$COUNTRY"              # País
-state="$STATE"                  # Estado
-locality="$LOCALITY"            # Localidad
-organization="$ORGANIZATION"    # Organización
-email="$EMAIL"                  # Correo electrónico
-
-# Verificar si el directorio no existe
-if [ ! -d "$ssl_dir" ]; then
-    # Crear directorio para almacenar los certificados
-    mkdir "$ssl_dir"
+# Verificar que el archivo .cert.env exista
+if [[ ! -f ".cert.env" ]]; then
+  echo "Error: El archivo .cert.env no existe."
+  exit 1
 fi
 
-cd "$ssl_dir" || exit
+# Cargar las variables de entorno desde el archivo .cert.env
+source .cert.env
 
-# Generar clave privada
-openssl genrsa -out private.key 2048
+# Verificar que todas las variables de entorno requeridas estén definidas
+if [[ -z "$CERT_DIR" || -z "$SERVER_CERT_NAME" || -z "$CLIENT_CERT_NAME" || -z "$DOMAIN" || -z "$CERT_EXPIRY_DAYS" ]]; then
+  echo "Error: Variables de entorno faltantes."
+  exit 1
+fi
 
-# Generar solicitud de firma de certificado (CSR)
-openssl req -new -key private.key -out csr.csr -subj "/C=$country/ST=$state/L=$locality/O=$organization/CN=$common_name/emailAddress=$email"
+# Crear directorio para almacenar los certificados si no existe
+mkdir -p "$CERT_DIR"
 
-# Generar certificado autofirmado válido por 365 días
-openssl x509 -req -days 365 -in csr.csr -signkey private.key -out certificate.crt
+# Generar clave privada y solicitud de certificado para el servidor
+openssl genpkey -algorithm RSA -out "$CERT_DIR/server.key" -pkeyopt rsa_keygen_bits:4096
+openssl req -new -key "$CERT_DIR/server.key" -out "$CERT_DIR/server.csr" -subj "/CN=$DOMAIN"
+openssl x509 -req -in "$CERT_DIR/server.csr" -signkey "$CERT_DIR/server.key" -out "$CERT_DIR/server.crt" -days "$CERT_EXPIRY_DAYS" -sha256
 
-echo "Se han creado los certificados SSL en el directorio '$ssl_dir'."
+# Generar clave privada y solicitud de certificado para el cliente
+openssl genpkey -algorithm RSA -out "$CERT_DIR/client.key" -pkeyopt rsa_keygen_bits:4096
+openssl req -new -key "$CERT_DIR/client.key" -out "$CERT_DIR/client.csr" -subj "/CN=$DOMAIN"
+openssl x509 -req -in "$CERT_DIR/client.csr" -signkey "$CERT_DIR/client.key" -out "$CERT_DIR/client.crt" -days "$CERT_EXPIRY_DAYS" -sha256
+
+# Mostrar información sobre los certificados generados
+echo "Certificado del servidor:"
+openssl x509 -in "$CERT_DIR/server.crt" -text -noout
+
+echo "Certificado del cliente:"
+openssl x509 -in "$CERT_DIR/client.crt" -text -noout
