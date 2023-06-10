@@ -3,6 +3,8 @@ package-lock.json
 
 # ssl cert
 ssl/
+cert/*
+
 
 # Logs
 logs

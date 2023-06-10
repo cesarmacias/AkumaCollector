@@ -1,0 +1,14 @@
+version: '3'
+services:
+  akuma:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: akuma-collector
+    image: akuma-collector:0.1
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
