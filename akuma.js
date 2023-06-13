@@ -164,6 +164,19 @@ async function main() {
     };
   };
 
+  // Función para obtener el indice de un OID con o sin index_slice
+  const oidIndex = (varbind, oid) => {
+    const index = varbind.oid.substring(oid.oid.length + 1);
+
+    if ("index_slice" in oid && Array.isArray(oid.index_slice)) {
+      const [start, end] = oid.index_slice;
+      const arr = index.split(".").slice(start, end);
+      return arr.join(".");
+    }
+
+    return index;
+  };
+
   // Función que devuelve una promesa para la función session.get de net-snmp
   const getAsync = (session, oidList) => {
     return new Promise((resolve, reject) => {
@@ -179,10 +192,10 @@ async function main() {
 
   // Función asincrónica para realizar una operación SNMP GET
   const performSNMPGet = async (data, snmpOpt, inherited, objInh) => {
-    const { hosts, oids } = data;
+    const { hosts, oids, maxConnections, measurement } = data;
     const { sessionOptions, userOptions, community } = snmpOpt;
 
-    const limit = pLimitModule.default(data.maxConnections); // Limitar el número de conexiones simultáneas
+    const limit = pLimitModule.default(maxConnections); // Limitar el número de conexiones simultáneas
     const resTotal = {};
 
     await Promise.all(
@@ -208,7 +221,7 @@ async function main() {
                   const resObj = _.merge(
                     {},
                     value,
-                    { target: host, measurement: data.measurement },
+                    { target: host, measurement },
                     objInh && objInh[host] ? objInh[host] : {},
                     data.extraInfo || {}
                   );
@@ -257,10 +270,7 @@ async function main() {
         (varbinds) => {
           for (const varbind of varbinds) {
             if (!snmp.isVarbindError(varbind)) {
-              results.push({
-                oid: varbind.oid,
-                value: varbind.value,
-              });
+              results.push(varbind);
             }
           }
         },
@@ -277,54 +287,60 @@ async function main() {
 
   // Función asincrónica para realizar una operación SNMP SUBTREE
   const snmpTable = async (data, snmpOpt, objInh) => {
-    const { hosts, oids, maxRepetitions } = data;
+    const { hosts, oids, maxRepetitions, maxConnections, measurement } = data;
     const { sessionOptions, userOptions, community } = snmpOpt;
 
-    const promises = hosts.map(async (host) => {
-      let session;
-      const results = {};
+    const limit = pLimitModule.default(maxConnections); // Limitar el número de conexiones simultáneas
 
-      if (sessionOptions.version === snmp.Version3) {
-        session = snmp.createV3Session(host, userOptions, sessionOptions);
-      } else {
-        session = snmp.createSession(host, community, sessionOptions);
-      }
+    const promises = hosts.map((host) =>
+      limit(async () => {
+        let session;
+        const results = {};
 
-      try {
-        for (const oid of oids) {
-          const varbinds = await subtreeAsync(session, oid.oid, maxRepetitions);
-
-          for (const varbind of varbinds) {
-            const index = varbind.oid.split(".").pop();
-            const name = oid.name;
-            const value = varbind.value.toString();
-
-            results[index] = results[index] || {};
-            results[index][name] = value;
-          }
+        if (sessionOptions.version === snmp.Version3) {
+          session = snmp.createV3Session(host, userOptions, sessionOptions);
+        } else {
+          session = snmp.createSession(host, community, sessionOptions);
         }
-      } catch (error) {
-        console.error(
-          `Error en la consulta SNMP GET TABLE para el host ${host}:`,
-          error.toString()
-        );
-      }
 
-      session.close();
+        try {
+          for (const oid of oids) {
+            const varbinds = await subtreeAsync(
+              session,
+              oid.oid,
+              maxRepetitions
+            );
 
-      for (const [key, value] of Object.entries(results)) {
-        const resObj = _.merge(
-          {},
-          value,
-          { target: host, measurement: data.measurement, index: key },
-          objInh && objInh[host] ? objInh[host] : {},
-          data.extraInfo || {}
-        );
-        sendResult(resObj);
-      }
+            for (const varbind of varbinds) {
+              const index = oidIndex(varbind, oid);
+              const value = treatSNMPResult(varbind, oid);
 
-      return results;
-    });
+              results[index] = _.merge({}, results[index], value);
+            }
+          }
+        } catch (error) {
+          console.error(
+            `Error en la consulta SNMP GET TABLE para el host ${host}:`,
+            error.toString()
+          );
+        }
+
+        session.close();
+
+        for (const [key, value] of Object.entries(results)) {
+          const resObj = _.merge(
+            {},
+            value,
+            { target: host, measurement, index: key },
+            objInh && objInh[host] ? objInh[host] : {},
+            data.extraInfo || {}
+          );
+          sendResult(resObj);
+        }
+
+        return results;
+      })
+    );
 
     await Promise.all(promises);
   };
@@ -364,7 +380,7 @@ async function main() {
             type: Joi.string().valid("hex", "regex"),
             conversion: Joi.string().valid("ipv4", "number"),
             tag: Joi.boolean(),
-            index_slice: Joi.array().items(Joi.number().integer()).length(2),
+            index_slice: Joi.array().items(Joi.number().integer()).min(1).max(2),
             regex: Joi.string().when("type", {
               is: "regex",
               then: Joi.required(),

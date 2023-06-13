@@ -14,10 +14,15 @@
     }
   ],
   "oids": [
-    { "oid": "1.3.6.1.2.1.2.2.1.2", "name": "ifDescr" },
+    {
+      "oid": "1.3.6.1.2.1.2.2.1.2",
+      "name": "ifDescr",
+      "tag": true
+    },
     {
       "oid": "1.3.6.1.2.1.31.1.1.1.10",
-      "name": "ifHCOutOctets"
+      "name": "ifHCOutOctets",
+      "index_slice": [-1]
     }
   ],
   "extraInfo": {
