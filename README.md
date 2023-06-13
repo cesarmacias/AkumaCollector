@@ -24,17 +24,12 @@ Modify the `.env` file to configure the following options:
 - `SEND_OPTION`: The option for sending the results (tcp, udp, or log for debugging).
 - `PRIVATE_KEY_PATH`: The path to the private key file for HTTPS server.
 - `CERTIFICATE_PATH`: The path to the certificate file for HTTPS server.
-- `SSL_DIR`: The path to the directory that will have private key and certificate
-- `COMMON_NAME`: Domain for certificate
-- `COUNTRY`: Country for certificate
-- `STATE`: State for certificate
-- `LOCALITY`: City for certificate
-- `ORGANIZATION`: Organization name for certificate
-- `EMAIL`: Email for certificate
 
 ## API Routes
 
 - `POST /snmp/get`: Performs SNMP GET operation based on the provided JSON payload. Validates and retrieves data from the specified hosts using SNMP.
+
+- `POST /snmp/table`: Performs SNMP GET TABLE operation based on the provided JSON payload. Validates and retrieves data from the specified hosts using SNMP. This method fetches the value for all OIDs lexicographically following a specified OID in the MIB tree which have the specified OID as their base.
 
 ## JSON Payload Structure
 
@@ -83,6 +78,26 @@ The JSON payload sent to `/snmp/get` route should follow the below structure:
 ```
 
 Refer to the code comments for detailed information on each field and their usage.
+
+## OIDs Structure
+
+The treated result is returned as an object with a structure that depends on the OID configuration. The field name is determined by the OID name, and the treated value is assigned to that field.
+The treated SNMP result applies specific conversions and treatments based on the provided OID configuration. Here are some key aspects of its behavior:
+
+- If the result is a varbind error, it returns an object with the error information.
+- If the result contains multiple values (an array), it treats each value individually.
+- The function applies different treatments based on the type of the SNMP value (ObjectType) and the conversions specified in the OID configuration.
+- Supported conversions include:
+  - `OctetString`: If the OID has a type of "hex", it returns the value as a hexadecimal string. If it has a type of "regex" and a regex pattern is provided, it performs a regex match and returns an object with matched values mapped to field names.
+  - `Counter64`: Treats the value as a 64-bit counter and returns the accumulated value.
+  - `Opaque`: Returns the value as a string.
+  - `TimeTicks`: Treats the value as a time duration and returns it divided by 100.0.
+- Additional treatments include:
+  - If the OID has a "split" property, it splits the treated value using the specified delimiter and keeps only the first part.
+  - If the OID has a "conversion" property set to "number", it converts the treated value to a number.
+  - If the OID has a "conversion" property set to "ipv4" and the treated value is a number, it converts it to a standard IPv4 address format.
+  - If the OID has a "conversion" property set to "ipv4" and the treated value is a string, it performs additional formatting to convert common representations (such as hexadecimal) to the standard IPv4 format.
+
 
 ## Tools
 
