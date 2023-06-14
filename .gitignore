@@ -1,7 +1,8 @@
 # ssl cert
-ssl/
 cert/*
 
+# pruebas locales
+dev/
 
 # Logs
 logs

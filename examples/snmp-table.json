@@ -1,12 +1,12 @@
 {
-  "hosts": ["192.168.224.244"],
-  "community": "antel159",
-  "measurement": "snmp_inf",
+  "hosts": ["192.168.0.1", "192.168.0.2"],
+  "community": "public",
+  "measurement": "snmp_if",
   "options": {
     "version": "2c",
     "timeout": 1000
   },
-  "maxRepetitions": 30,
+  "maxRepetitions": 50,
   "inherited": [
     {
       "oid": "1.3.6.1.2.1.1.5.0",
@@ -26,6 +26,6 @@
     }
   ],
   "extraInfo": {
-    "org_id": "1000"
+    "organization": { "id": "1000" }
   }
 }
