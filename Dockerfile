@@ -1,4 +1,4 @@
-FROM node:18-alpine AS akuma
+FROM node:20-alpine AS akuma
 
 # Create app directory
 RUN mkdir -p /home/node/app/node_modules
