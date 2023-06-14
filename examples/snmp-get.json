@@ -1,7 +1,7 @@
 {
-  "hosts": ["192.168.224.244"],
-  "community": "antel159",
-  "measurement": "snmp_inf",
+  "hosts": ["192.168.0.1", "192.168.0.2"],
+  "community": "public",
+  "measurement": "test",
   "options": {
     "version": "2c"
   },
@@ -14,20 +14,25 @@
   "oids": [
     {
       "oid": "1.3.6.1.2.1.1.3.0",
-      "name": "uptime"
+      "name": "sysUpTimeInstance"
     },
     {
-      "oid": "1.3.6.1.2.1.2.2.1.6.317",
-      "name": "mac",
-      "type": "hex",
+      "oid": "1.3.6.1.2.1.4.1.0",
+      "name": "ipForwarding",
       "tag": true
     },
     {
-      "oid": "1.3.6.1.2.1.31.1.1.1.10.21",
-      "name": "ifHCOutOctets"
+      "oid": "1.3.6.1.2.1.4.21.1.1.0.0.0.0",
+      "name": "IpAddress"
     }
   ],
   "extraInfo": {
-    "org_id": "1000"
+    "organization": {"id": "1000"}
   }
 }
+
+
+
+
+
+
