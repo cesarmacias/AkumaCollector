@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Cargar variables de entorno desde el archivo .env
-source .test.env
+source .env
 
-# Ruta del API a invocar
+# Ruta del API a invocar - test
 ROUTE="$1"
 
 if [ "$PROTOCOL" = "http" ]; then

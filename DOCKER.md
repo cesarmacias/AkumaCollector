@@ -31,6 +31,7 @@ This repository contains the source code for the Akuma Collector application.
     SEND_OPTION="udp"
     PRIVATE_KEY_PATH="cert/server.key"
     CERTIFICATE_PATH="cert/server.crt"
+    PROTOCOL="https"
    ```
 
 4. Build the iamge Docker container using Docker Compose:
@@ -85,13 +86,13 @@ To push the Akuma Collector Docker image to Docker Hub, follow these steps:
 4. Tag the Docker image with your Docker Hub username and repository name using the following command:
 
    ```bash
-   docker tag akuma-collector:0.1 your-dockerhub-username/akuma-collector:0.1
+   docker tag akuma:latest your-dockerhub-username/akuma-collector:latest
    ```
 
 5. Push the Docker image to Docker Hub using the following command:
 
    ```bash
-   docker push your-dockerhub-username/akuma-collector:0.1
+   docker push your-dockerhub-username/akuma-collector:latest
    ```
 
    Docker will upload the image to your Docker Hub repository.
