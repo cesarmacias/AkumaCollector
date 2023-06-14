@@ -4,6 +4,7 @@
 
 const express = require("express");
 const https = require("https");
+const http = require("http");
 const fs = require("fs");
 const Joi = require("joi");
 
@@ -183,9 +184,13 @@ app.post("/snmp/table", validateCommonJSON, async (req, res) => {
 const sendHost = process.env.SEND_HOST;
 const sendPort = process.env.SEND_PORT;
 const listenPort = process.env.LISTEN_PORT;
-let sendOption = process.env.SEND_OPTION;
-const privateKeyPath = process.env.PRIVATE_KEY_PATH;
-const certificatePath = process.env.CERTIFICATE_PATH;
+const protocol = process.env.PROTOCOL.toLowerCase(); // Variable de entorno para especificar el protocolo (http o https)
+const sendOption =
+  process.env.NODE_ENV === "debug" ? "log" : process.env.SEND_OPTION;
+const privateKeyPath =
+  protocol === "https" ? process.env.PRIVATE_KEY_PATH : true;
+const certificatePath =
+  protocol === "https" ? process.env.CERTIFICATE_PATH : true;
 
 // Verificación de variables de entorno requeridas
 if (
@@ -194,38 +199,35 @@ if (
   !listenPort ||
   !sendOption ||
   !privateKeyPath ||
-  !certificatePath
+  !certificatePath ||
+  !protocol
 ) {
   console.error("Debe especificar las variables de entorno correctamente:");
   console.error(
-    "SEND_HOST, SEND_PORT, LISTEN_PORT, SEND_OPTION, PRIVATE_KEY_PATH, CERTIFICATE_PATH"
+    "SEND_HOST, SEND_PORT, LISTEN_PORT, SEND_OPTION, PRIVATE_KEY_PATH (https), CERTIFICATE_PATH (https), PROTOCOL"
   );
   process.exit(1);
 }
 
-// Si NODE_ENV es "debug", cambiar sendOption a "log"
-if (process.env.NODE_ENV === "debug") {
-  sendOption = "log";
-}
-
 // Validar si no se pueden abrir el certificado o la clave privada
 try {
-  // Leer el certificado y la clave privada
-  const privateKey = fs.readFileSync(privateKeyPath);
-  const certificate = fs.readFileSync(certificatePath);
+  // Configurar el servidor HTTP
+  let server = http.createServer();
+  if (protocol === "https") {
+    // Leer el certificado y la clave privada
+    const privateKey = fs.readFileSync(privateKeyPath);
+    const certificate = fs.readFileSync(certificatePath);
+    const options = {
+      key: privateKey,
+      cert: certificate,
+    };
 
-  // Configurar el servidor HTTPS
-  const options = {
-    key: privateKey,
-    cert: certificate,
-  };
-
-  // Crear el servidor HTTPS
-  const server = https.createServer(options);
-
+    // Configurar el servidor HTTPS
+    server = https.createServer(options);
+  }
   // Configuración del puerto y la aplicación
   server.listen(listenPort, () => {
-    console.log(`Server listening on port ${listenPort}`);
+    console.log(`Server ${protocol} listening on port ${listenPort}`);
   });
 
   // Asignar la aplicación al servidor
