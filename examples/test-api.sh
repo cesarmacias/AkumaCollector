@@ -6,7 +6,11 @@ source .test.env
 # Ruta del API a invocar
 ROUTE="$1"
 
-URL="https://$DOMAIN:$LISTEN_PORT/$ROUTE"
+if [ "$PROTOCOL" = "http" ]; then
+  URL="http://$DOMAIN:$LISTEN_PORT/$ROUTE"
+else
+  URL="https://$DOMAIN:$LISTEN_PORT/$ROUTE"
+fi
 
 # Datos del servidor HTTPS
 CERTIFICATE="$CLIENT_CRT"                   # Ruta al certificado del cliente
@@ -29,12 +33,20 @@ if ! echo "$JSON_DATA" | jq . >/dev/null 2>&1; then
     exit 1
 fi
 
-# Enviar la solicitud HTTPS
-curl -X POST \
+# Enviar la solicitud HTTP o HTTPS según el protocolo especificado
+if [ "$PROTOCOL" = "http" ]; then
+  curl -X POST \
+    -H "Content-Type: application/json" \
+    -d "$JSON_DATA" \
+    "$URL"
+else
+  curl -X POST \
     -H "Content-Type: application/json" \
     --cacert "$CACERT" \
     --cert "$CERTIFICATE" \
     --key "$PRIVATE_KEY" \
     -d "$JSON_DATA" \
     "$URL"
+fi
+
 
