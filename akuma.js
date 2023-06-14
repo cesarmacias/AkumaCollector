@@ -137,11 +137,11 @@ app.post("/snmp/get", validateCommonJSON, async (req, res) => {
           snmpOpt,
           true,
           undefined,
-          sendOption
+          sendMsg
         )
       : undefined;
 
-    await performSNMPGet(data, snmpOpt, false, inh, sendOption);
+    await performSNMPGet(data, snmpOpt, false, inh, sendMsg);
 
     res.sendStatus(200);
   } catch (error) {
@@ -167,11 +167,11 @@ app.post("/snmp/table", validateCommonJSON, async (req, res) => {
           snmpOpt,
           true,
           undefined,
-          sendOption
+          sendMsg
         )
       : undefined;
 
-    await snmpTable(data, snmpOpt, inh, sendOption);
+    await snmpTable(data, snmpOpt, inh, sendMsg);
 
     res.sendStatus(200);
   } catch (error) {
@@ -191,6 +191,7 @@ const privateKeyPath =
   protocol === "https" ? process.env.PRIVATE_KEY_PATH : true;
 const certificatePath =
   protocol === "https" ? process.env.CERTIFICATE_PATH : true;
+const sendMsg = { sendHost, sendPort, sendOption }; // Definir objeto para envio de mensajes
 
 // Verificación de variables de entorno requeridas
 if (

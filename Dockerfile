@@ -17,6 +17,5 @@ COPY --chown=node:node . .
 # Copy certificates
 COPY --chown=node:node cert/ cert/
 
-# Expose port and start application
-EXPOSE 3000
+# start main app
 CMD [ "npm", "start" ]
