@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Cargar variables de entorno desde el archivo .env
-source .test.env
+source .env
 
 # Ruta del API a invocar
 ROUTE="$1"
