@@ -118,6 +118,11 @@ The results that the collector receives will be sent by UDP or TCP in JSON forma
 
 ![Arquitecture](akuma-collector.drawio.svg)
 
+## Manuals
+
+[How to create a docker image for AkumaCollector](docs/DOCKER.md)
+[How to make a service for AkumaCollector](docs/service.md)
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
