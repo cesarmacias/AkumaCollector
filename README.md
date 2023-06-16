@@ -116,7 +116,7 @@ The results that the collector receives will be sent by UDP or TCP in JSON forma
 
 ## Diagram
 
-![Arquitecture](akuma-collector.drawio)
+![Arquitecture](akuma-collector.drawio.svg)
 
 ## License
 
