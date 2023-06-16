@@ -120,8 +120,8 @@ The results that the collector receives will be sent by UDP or TCP in JSON forma
 
 ## Manuals
 
-[How to create a docker image for AkumaCollector](docs/DOCKER.md)
-[How to make a service for AkumaCollector](docs/service.md)
+1. [How to create a docker image for AkumaCollector](docs/DOCKER.md)
+2. [How to make a service for AkumaCollector](docs/service.md)
 
 ## License
 
