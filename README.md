@@ -114,6 +114,10 @@ The treated SNMP result applies specific conversions and treatments based on the
 
 The results that the collector receives will be sent by UDP or TCP in JSON format. For use with an external database will need a process to receive the data and save it in the database. For Elasticsearch with queue management, could use Logstash with the plugin [UDP input](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-udp.html) 
 
+## Diagram
+
+![Arquitecture](akuma-collector.drawio)
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
