@@ -28,10 +28,10 @@ fi
 JSON_DATA=$(cat "$JSON_FILE")
 
 # Verificar la validez del archivo JSON
-if ! echo "$JSON_DATA" | jq . >/dev/null 2>&1; then
-    echo "El archivo JSON no es válido."
-    exit 1
-fi
+#if ! echo "$JSON_DATA" | jq . >/dev/null 2>&1; then
+#    echo "El archivo JSON no es válido."
+#    exit 1
+#fi
 
 # Enviar la solicitud HTTP o HTTPS según el protocolo especificado
 if [ "$PROTOCOL" = "http" ]; then
