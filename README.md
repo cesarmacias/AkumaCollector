@@ -24,6 +24,7 @@ Modify the `.env` file to configure the following options:
 - `SEND_OPTION`: The option for sending the results (tcp, udp, or log for debugging).
 - `PRIVATE_KEY_PATH`: The path to the private key file for HTTPS server.
 - `CERTIFICATE_PATH`: The path to the certificate file for HTTPS server.
+- `PROTOCOL`: The protocol for API, could be `http` or `https`
 
 ## API Routes
 
@@ -101,8 +102,21 @@ The treated SNMP result applies specific conversions and treatments based on the
 
 ## Tools
 
-1. Create Certificates files: `bash make-cert.sh`
-2. Send JSON to API to test snmp/get: `bash examples/snmp-get.sh examples/snmp-get.json`
+1. Create Certificates files: `make-cert.sh`
+    - read `.cert.env` for enviaroment variables
+2. Send JSON to API to test:  `examples/test-api.sh`
+    - read `.env` for enviaroment variables: PROTOCOL, DOMAIN, LISTEN_PORT, CLIENT_CRT, CLIENT_KEY and CERTIFICATE_PATH
+    - argument 1 for API ROUTE
+    - argument 2 path to JSON file to send
+    - example: `bash examples/test-api.sh snmp/get examples/snmp-get.json` 
+
+## Results
+
+The results that the collector receives will be sent by UDP or TCP in JSON format. For use with an external database will need a process to receive the data and save it in the database. For Elasticsearch with queue management, could use Logstash with the plugin [UDP input](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-udp.html) 
+
+## Diagram
+
+![Arquitecture](akuma-collector.drawio.svg)
 
 ## License
 
