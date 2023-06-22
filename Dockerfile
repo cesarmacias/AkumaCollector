@@ -15,7 +15,7 @@ RUN npm install
 COPY --chown=node:node . .
 
 # Copy certificates
-COPY --chown=node:node cert/ cert/
+# COPY --chown=node:node cert/ cert/
 
 # start main app
 CMD [ "npm", "start" ]
