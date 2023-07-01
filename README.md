@@ -131,6 +131,16 @@ For install as a service `akuma` in path `/usr/local/AkumaCollector` and owned b
 sudo wget -O akuma-install.sh https://raw.githubusercontent.com/cesarmacias/AkumaCollector/main/akuma-install.sh && sudo bash akuma-install.sh && sudo rm akuma-install.sh
 ```
 
+with default configuration
+
+```bash
+SEND_HOST="localhost"
+SEND_PORT=2514
+LISTEN_PORT=3000
+SEND_OPTION="udp"
+PROTOCOL="http"
+```
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

@@ -4,6 +4,11 @@ After=network.target
 
 [Service]
 Environment=NODE_ENV=production
+Environment=SEND_HOST=localhost
+Environment=SEND_PORT=2514
+Environment=LISTEN_PORT=3000
+Environment=SEND_OPTION=udp
+Environment=PROTOCOL=http
 ExecStart=/usr/bin/npm start
 WorkingDirectory=/usr/local/AkumaCollector
 User=akuma
