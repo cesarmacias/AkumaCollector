@@ -123,6 +123,14 @@ The results that the collector receives will be sent by UDP or TCP in JSON forma
 1. [How to create a docker image for AkumaCollector](docs/DOCKER.md)
 2. [How to make a service for AkumaCollector](docs/service.md)
 
+## Instalation
+
+For install as a service `akuma` in path `/usr/local/AkumaCollector` and owned by user `akuma` 
+
+```bash
+sudo wget -O akuma-install.sh https://raw.githubusercontent.com/cesarmacias/AkumaCollector/main/akuma-install.sh && sudo bash akuma-install.sh && sudo rm akuma-install.sh
+```
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
