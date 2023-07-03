@@ -59,7 +59,12 @@ const validateCommonJSON = (req, res, next) => {
             is: "regex",
             then: Joi.required(),
           }),
-          split: Joi.string(),
+          split: Joi.alternatives()
+            .try(
+              Joi.string(),
+              Joi.array().length(2).ordered(Joi.string(), Joi.number())
+            )
+            .optional(),
         })
       )
       .required(),
