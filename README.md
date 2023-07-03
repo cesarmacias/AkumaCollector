@@ -12,7 +12,7 @@ AkumaCollector is a Node.js-based data collection tool that utilizes SNMP and ot
 1. Set the required environment variables in a `.env` file or your preferred method.
 2. Run AkumaCollector, option 1: `node akuma.js`
 3. Run AkumaCollector, option 2: `npm run start`
-4. Run AkumaCollector, in debug: `npm run debug` 
+4. Run AkumaCollector, in debug: `npm run debug`
 
 ## Configuration
 
@@ -89,30 +89,29 @@ The treated SNMP result applies specific conversions and treatments based on the
 - If the result contains multiple values (an array), it treats each value individually.
 - The function applies different treatments based on the type of the SNMP value (ObjectType) and the conversions specified in the OID configuration.
 - Supported conversions include:
-  - `OctetString`: If the OID has a type of "hex", it returns the value as a hexadecimal string. If it has a type of "regex" and a regex pattern is provided, it performs a regex match and returns an object with matched values mapped to field names.
+  - `OctetString`: If the OID has the `type`  property whith value `hex`, it returns the value as a hexadecimal string. If it has a type of `regex` and a regex pattern is provided, it performs a regex match and returns an object with matched values mapped to field names.
   - `Counter64`: Treats the value as a 64-bit counter and returns the accumulated value.
   - `Opaque`: Returns the value as a string.
   - `TimeTicks`: Treats the value as a time duration and returns it divided by 100.0.
 - Additional treatments include:
-  - If the OID has a "split" property, it splits the treated value using the specified delimiter and keeps only the first part.
-  - If the OID has a "conversion" property set to "number", it converts the treated value to a number.
-  - If the OID has a "conversion" property set to "ipv4" and the treated value is a number, it converts it to a standard IPv4 address format.
-  - If the OID has a "conversion" property set to "ipv4" and the treated value is a string, it performs additional formatting to convert common representations (such as hexadecimal) to the standard IPv4 format.
-
+  - If the OID has a `split` property, this option allows you to specify a separator to split a string into an array of substrings, and if it is an array, it can also limit the result.
+  - If the OID has a `conversion` property set to `number`, it converts the treated value to a number.
+  - If the OID has a `conversion` property set to `ipv4` and the treated value is a number, it converts it to a standard IPv4 address format.
+  - If the OID has a `conversion` property set to `ipv4` and the treated value is a string, it performs additional formatting to convert common representations (such as hexadecimal) to the standard IPv4 format.
 
 ## Tools
 
 1. Create Certificates files: `make-cert.sh`
-    - read `.cert.env` for enviaroment variables
-2. Send JSON to API to test:  `examples/test-api.sh`
-    - read `.env` for enviaroment variables: PROTOCOL, DOMAIN, LISTEN_PORT, CLIENT_CRT, CLIENT_KEY and CERTIFICATE_PATH
-    - argument 1 for API ROUTE
-    - argument 2 path to JSON file to send
-    - example: `bash examples/test-api.sh snmp/get examples/snmp-get.json` 
+   - read `.cert.env` for enviaroment variables
+2. Send JSON to API to test: `examples/test-api.sh`
+   - read `.env` for enviaroment variables: PROTOCOL, DOMAIN, LISTEN_PORT, CLIENT_CRT, CLIENT_KEY and CERTIFICATE_PATH
+   - argument 1 for API ROUTE
+   - argument 2 path to JSON file to send
+   - example: `bash examples/test-api.sh snmp/get examples/snmp-get.json`
 
 ## Results
 
-The results that the collector receives will be sent by UDP or TCP in JSON format. For use with an external database will need a process to receive the data and save it in the database. For Elasticsearch with queue management, could use Logstash with the plugin [UDP input](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-udp.html) 
+The results that the collector receives will be sent by UDP or TCP in JSON format. For use with an external database will need a process to receive the data and save it in the database. For Elasticsearch with queue management, could use Logstash with the plugin [UDP input](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-udp.html)
 
 ## Diagram
 
@@ -123,9 +122,9 @@ The results that the collector receives will be sent by UDP or TCP in JSON forma
 1. [How to create a docker image for AkumaCollector](docs/DOCKER.md)
 2. [How to make a service for AkumaCollector](docs/service.md)
 
-## Instalation
+## Instalation and Update
 
-For install as a service `akuma` in path `/usr/local/AkumaCollector` and owned by user `akuma` 
+For install as a service `akuma` in path `/usr/local/AkumaCollector` and owned by user `akuma`, you can use the script `akuma-install.sh`
 
 ```bash
 sudo wget -O akuma-install.sh https://raw.githubusercontent.com/cesarmacias/AkumaCollector/main/akuma-install.sh && sudo bash akuma-install.sh && sudo rm akuma-install.sh
@@ -139,6 +138,12 @@ SEND_PORT=2514
 LISTEN_PORT=3000
 SEND_OPTION="udp"
 PROTOCOL="http"
+```
+
+For Update you can use the script `akuma-update.sh`
+
+```bash
+sudo wget -O akuma-update.sh https://raw.githubusercontent.com/cesarmacias/AkumaCollector/main/akuma-update.sh && sudo bash akuma-update.sh && sudo rm akuma-update.sh
 ```
 
 ## License
