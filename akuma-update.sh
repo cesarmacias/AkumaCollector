@@ -12,7 +12,7 @@ cd "$PROGRAM_PATH" || exit
 CURRENT_OWNER=$(stat -c '%U:%G' "$PROGRAM_PATH")
 
 # Actualizar el repositorio de GitHub
-git pull origin master
+git pull
 
 # Actualizar los módulos de Node.js
 npm install
