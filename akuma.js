@@ -178,11 +178,7 @@ app.post("/snmp/table", validateCommonJSON, async (req, res) => {
 
     const processData = await snmpTable(data, snmpOpt, inh, sendMsg);
 
-    const sumatoria = processData.reduce((acumulador, numero) => {
-      return acumulador + numero;
-    }, 0);
-
-    res.status(200).send({ mensaje: 'Transacción exitosa', cantidad: sumatoria  });
+    res.status(200).send({ mensaje: 'Transacción exitosa', cantidad: processData });
   } catch (error) {
     console.error("Error en la ruta snmp/table:", error);
     res.status(500).json({ error: "Internal Server Error" });
