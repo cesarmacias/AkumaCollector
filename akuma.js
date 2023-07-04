@@ -146,9 +146,9 @@ app.post("/snmp/get", validateCommonJSON, async (req, res) => {
         )
       : undefined;
 
-    await performSNMPGet(data, snmpOpt, false, inh, sendMsg);
+      const processData = await performSNMPGet(data, snmpOpt, false, inh, sendMsg);
 
-    res.sendStatus(200);
+    res.status(200).send({ mensaje: 'Transacción exitosa', cantidad: Object.keys(processData).length });
   } catch (error) {
     console.error("Error en la ruta snmp/get:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -176,9 +176,9 @@ app.post("/snmp/table", validateCommonJSON, async (req, res) => {
         )
       : undefined;
 
-    await snmpTable(data, snmpOpt, inh, sendMsg);
+    const processData = await snmpTable(data, snmpOpt, inh, sendMsg);
 
-    res.sendStatus(200);
+    res.status(200).send({ mensaje: 'Transacción exitosa', cantidad: Object.keys(processData).length  });
   } catch (error) {
     console.error("Error en la ruta snmp/table:", error);
     res.status(500).json({ error: "Internal Server Error" });
