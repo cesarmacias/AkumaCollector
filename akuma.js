@@ -148,7 +148,7 @@ app.post("/snmp/get", validateCommonJSON, async (req, res) => {
 
       const processData = await performSNMPGet(data, snmpOpt, false, inh, sendMsg);
 
-    res.status(200).send({ mensaje: 'Transacción exitosa', cantidad: Object.keys(processData).length });
+    res.status(200).send({ mensaje: 'Transacción exitosa', cantidad: processData });
   } catch (error) {
     console.error("Error en la ruta snmp/get:", error);
     res.status(500).json({ error: "Internal Server Error" });
