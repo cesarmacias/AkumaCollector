@@ -13,11 +13,18 @@ sudo groupadd -r $GROUP 2>/dev/null || true
 # Crear el usuario si no existe
 sudo useradd -r -g $GROUP -md $INSTALLATION_PATH -s /usr/sbin/nologin $USER 2>/dev/null || true
 
+# Verificar si Git está instalado
+if ! command -v git &> /dev/null; then
+    # Instalar Git
+    sudo apt-get update
+    sudo apt-get install -y git
+fi
+
 # Crear el directorio de instalación si no existe
 sudo mkdir -p $INSTALLATION_PATH
 
-# Descargar el repositorio y extraer los archivos en el directorio de instalación
-sudo curl -LsS https://github.com/cesarmacias/AkumaCollector/archive/refs/heads/main.tar.gz | sudo tar -xz -C $INSTALLATION_PATH --strip-components=1
+# Clonar el repositorio en el directorio de instalación
+sudo git clone https://github.com/cesarmacias/AkumaCollector.git $INSTALLATION_PATH
 
 # Cambiar los permisos de la carpeta de instalación
 sudo chown -R $USER:$GROUP $INSTALLATION_PATH
