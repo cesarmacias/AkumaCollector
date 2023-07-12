@@ -4,6 +4,10 @@ cert/*
 # pruebas locales
 dev/
 
+# logstash
+*-logstash.conf
+elastic-dev_console.*
+
 # Logs
 logs
 *.log
