@@ -1,0 +1,18 @@
+{
+  "logtash": {
+    "cluster": ["manage_ilm", "manage_pipeline", "monitor", "manage_index_templates", "manage_rollup"],
+    "indices": [
+      {
+        "names": ["ecs-logstash*"],
+        "privileges": ["write", "create"],
+        "allow_restricted_indices": false
+      }
+    ],
+    "applications": [],
+    "run_as": [],
+    "metadata": {},
+    "transient_metadata": {
+      "enabled": true
+    }
+  }
+}
